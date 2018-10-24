@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Range Hunter!</title>
+        <meta charset = "UTF-8">
+        <meta name = "viewport" content = "width = device-width, initial-scale = 1.0">
+        <link href = "css/style.css" rel = "stylesheet" type = "text/css"/>
+        <meta name = "description" content = "Range Hunter game"> 
+        <meta name = "keywords" content = "Range Hunter, range, hunter, game, DkIT, game development, gd2,
+              student, project, canvas">
+        <meta name = "author" content = "Oisin Murphy, Patricia Bere, Ben Watt">        <!--we made this website-->
+        <meta name = "viewport" content = "width = device-width, initial-scale = 1.0">  <!--for make phone nice maybe-->
+        <link rel = "icon" type = "image/png" sizes = "16x16" href = "images/websiteAssets/favicon16x16.png">
+        <link rel = "icon" type = "image/png" sizes = "32x32" href = "images/websiteAssets/favicon32x32.png">
+        <link rel = "icon" type = "image/png" sizes = "96x96" href = "images/websiteAssets/favicon96x96.png"> 
+        <!--ICONNNNS! :D-->
+        <!--below are scripts-->
+        <script src="scripts/CharAnimation.js" type="text/javascript"></script>
+        <script src="scripts/BackgroundImage.js" type="text/javascript"></script>
+        <script src="scripts/Enemies/boarEnemy.js" type="text/javascript"></script>
+        <script src="scripts/Enemies/bullEnemy.js" type="text/javascript"></script>
+        <script src="scripts/Enemies/crocodileEnemy.js" type="text/javascript"></script>
+        <script src="scripts/Enemies/birdEnemy.js" type="text/javascript"></script>
+        <script src="scripts/obstacle.js" type="text/javascript"></script>
+        <script src="scripts/decoration.js" type="text/javascript"></script>
+        <script src="scripts/endGoal.js" type="text/javascript"></script>
+        <script src="scripts/ground.js" type="text/javascript"></script>
+        <script src="scripts/pitfall.js" type="text/javascript"></script>
+        <script>
+            var canvasHeight = 720;
+            var canvasWidth = 1280;
+            //canvas dimensions for the game specifically
+            var canvas;
+            var ctx;
+            var backgrounds = [];
+            var decorations = [];
+            var enemies = [];
+            var obstacles = [];
+            var grounds = [];
+            var pitfalls = [];
+            var character;
+            var goal;
+            var keyList = [256];
+            //array for animations
+            var bgLayer1 = "images/gameAssets/plx-1.png";
+            var bgLayer2 = "images/gameAssets/plx-3.png";
+            var bgLayer3 = "images/gameAssets/plx-5.png";
+            var bush = "images/gameAssets/bush.png";
+            var groundImg = "images/gameAssets/Foreground1.png";
+            var groundImgShort = "images/gameAssets/Foreground1Short.png";
+            var longHouse = "images/gameAssets/longhouse.png";
+            var temple = "images/gameAssets/EndTemple2.png";
+            //backgrounds for the game's default level
+            
+            var obstacle1 = "images/gameAssets/rock.png";
+            var obstacle2 = "images/gameAssets/woodLog.png";
+            var bigTree = "images/gameAssets/bigTree.png";
+            
+            var leftObstructed = false;
+            var rightObstructed = false;
+            
+            var gameStart = false;
+            var isDead = false;
+            var gameOver = false;
+
+            window.onload = onAllAssetsLoaded;
+            document.write("<div id = 'loading'>Now Loading...</div>");
+
+            function onAllAssetsLoaded() {
+                //hide loading message.
+                document.getElementById("loading").style.visibility = "hidden";
+
+                canvas = document.getElementById("canvas");
+                //creates reference var for the canvas itself
+                ctx = canvas.getContext("2d");
+                //defines a 2d rendering context so game can be displayed
+                canvas.height = canvasHeight;
+                canvas.width = canvasWidth;
+                //forced canvas dimension consistancy
+                
+                //----------------------startup bgs----------------------
+                //                   backgroundImage(ctx, animationStartDelay, canvasHeight, scrollSpeed, imagePath)
+                backgrounds[0] = new backgroundImage(ctx, 0, canvas.height, 10, bgLayer1);
+                backgrounds[1] = new backgroundImage(ctx, 0, canvas.height, 5, bgLayer2);
+                backgrounds[2] = new backgroundImage(ctx, 0, canvas.height, 0.7, bgLayer3);
+                //backgrounds[3] = new backgroundImage(ctx, 0, canvas.height, 0.7, ground);
+                
+                //----------------------startup decorations----------------------
+                //                   decoration(ctx, xCenter, yCenter, animationStartDelay, canvasHeight, scrollSpeed, imagePath)
+                decorations[0] = new decoration(ctx, 140, 410, 0, canvas.height, 0.7, bush);
+                decorations[1] = new decoration(ctx, 500, 410, 0, canvas.height, 0.7, bush);
+                decorations[2] = new decoration(ctx, 700, 410, 0, canvas.height, 0.7, bush);
+                decorations[3] = new decoration(ctx, 1500, 410, 0, canvas.height, 0.7, bush);
+                decorations[4] = new decoration(ctx, 1700, 410, 0, canvas.height, 0.7, bush);
+                decorations[5] = new decoration(ctx, 1900, 410, 0, canvas.height, 0.7, bush);
+                decorations[6] = new decoration(ctx, 2100, 410, 0, canvas.height, 0.7, bush);
+                decorations[7] = new decoration(ctx, 2700, 410, 0, canvas.height, 0.7, bush);
+                decorations[8] = new decoration(ctx, 2900, 410, 0, canvas.height, 0.7, bush);
+                decorations[9] = new decoration(ctx, 3400, 410, 0, canvas.height, 0.7, bush);
+                decorations[10] = new decoration(ctx, 3200, 410, 0, canvas.height, 0.7, bush);
+                decorations[11] = new decoration(ctx, 4400, 410, 0, canvas.height, 0.7, bush);
+                decorations[12] = new decoration(ctx, 4200, 410, 0, canvas.height, 0.7, bush);
+                decorations[13] = new decoration(ctx, 4800, 410, 0, canvas.height, 0.7, bush);
+                decorations[14] = new decoration(ctx, 5000, 410, 0, canvas.height, 0.7, bush);
+                decorations[15] = new decoration(ctx, -450, 410, 0, canvas.height, 0.7, bush);
+                decorations[16] = new decoration(ctx, -320, 410, 0, canvas.height, 0.7, bush);
+                decorations[17] = new decoration(ctx, 210, 105, 0, canvas.height, 0.7, longHouse);
+                decorations[18] = new decoration(ctx, 5200, -250, 0, canvas.height, 0.7, temple);
+                
+                //----------------------grounds----------------------
+                //               ground(ctx, xCenter, yCenter, width, height, canvasHeight, scrollSpeed, imagePath)
+                grounds[0] = new ground(ctx, 0, 0, canvas.width, canvas.height, canvas.height, 0.7, groundImg);
+                grounds[1] = new ground(ctx, -canvas.width + 5, 0, canvas.width, canvas.height, canvas.height, 0.7, groundImg);
+                grounds[2] = new ground(ctx, canvas.width - 5, 0, 1200, canvas.height, canvas.height, 0.7, groundImg);
+                grounds[3] = new ground(ctx, canvas.width * 2 + 50, 0, 1200, canvas.height, canvas.height, 0.7, groundImg);
+                grounds[4] = new ground(ctx, canvas.width * 3 + 70, 0, 172, canvas.height, canvas.height, 0.7, groundImgShort);
+                grounds[5] = new ground(ctx, canvas.width * 3 + 340, 0, 172, canvas.height, canvas.height, 0.7, groundImgShort);
+                grounds[6] = new ground(ctx, canvas.width * 3 + 510, 0, 1200, canvas.height, canvas.height, 0.7, groundImg);
+                grounds[7] = new ground(ctx, canvas.width * 3 + 1700, 0, 1200, canvas.height, canvas.height, 0.7, groundImg);
+                
+                //----------------------character----------------------
+                //              characterAnimation(ctx, xCentre, yCentre, width, height, canvasWidth, canvasHeight)
+                character = new characterAnimation(ctx, 1000, 895, 31 * 2, 48 * 2, canvas.width, canvas.height);
+                
+                //----------------------startup enemies----------------------
+                //               boarEnemy(ctx, animationStartDelay, xCenter, yCenter, width, height, canvasWidth, canvasHeight) 
+                enemies[0] = new boarEnemy(ctx, 0, 1500, 945, 84, 48, canvas.width, canvas.height);
+                enemies[1] = new boarEnemy(ctx, 25, 1950, 945, 84, 48, canvas.width, canvas.height);
+                enemies[2] = new boarEnemy(ctx, 70, 2500, 945, 84, 48, canvas.width, canvas.height);
+                enemies[3] = new boarEnemy(ctx, 90, 2700, 945, 84, 48, canvas.width, canvas.height);
+                enemies[4] = new bullEnemy(ctx, 4100, 900, 298, 100, canvas.width, canvas.height);
+                enemies[5] = new birdEnemy(ctx, 0, 400, 64, 62, canvas.width, canvas.height, 8);
+                enemies[6] = new birdEnemy(ctx, 100, 620, 64, 62, canvas.width, canvas.height, 14);
+                enemies[7] = new birdEnemy(ctx, 300, 510, 64, 62, canvas.width, canvas.height, 20);
+                
+                //----------------------startup obstacles----------------------
+                //                 obstacle(ctx, image, xCenter, yCenter, height, width, canvasWidth, canvasHeight)
+                obstacles[0] = new obstacle(ctx, obstacle2, 1600, 940, 70, 71, canvas.width, canvas.height);
+                obstacles[1] = new obstacle(ctx, bigTree, 0, 360, 720, 498, canvas.width, canvas.height);
+                obstacles[2] = new obstacle(ctx, obstacle1, 2700, 940, 63, 90, canvas.width, canvas.height);
+                obstacles[3] = new obstacle(ctx, obstacle1, 2750, 940, 63, 90, canvas.width, canvas.height);
+                obstacles[4] = new obstacle(ctx, obstacle1, 2800, 940, 63, 90, canvas.width, canvas.height);
+                obstacles[5] = new obstacle(ctx, obstacle2, 3450, 940, 70, 71, canvas.width, canvas.height);
+                obstacles[6] = new obstacle(ctx, obstacle1, 3400, 940, 63, 90, canvas.width, canvas.height);
+                obstacles[7] = new obstacle(ctx, obstacle2, 4240, 940, 70, 71, canvas.width, canvas.height);
+                obstacles[8] = new obstacle(ctx, obstacle2, 4200, 940, 70, 71, canvas.width, canvas.height);
+                obstacles[9] = new obstacle(ctx, obstacle1, 5200, 940, 63, 90, canvas.width, canvas.height);
+                obstacles[10] = new obstacle(ctx, obstacle1, 5500, 940, 70, 71, canvas.width, canvas.height);
+                obstacles[11] = new obstacle(ctx, obstacle2, 5450, 940, 70, 71, canvas.width, canvas.height);
+                //--------------------------------------------------------------
+                
+                //----------------------pitfalls----------------------
+                //                pitfall(ctx, xCenter, yCenter, height, width, canvasWidth, canvasHeight)
+                pitfalls[0] = new pitfall(ctx, 3135, 970, 200, 100, canvas.width, canvas.height);
+                pitfalls[1] = new pitfall(ctx, 4460, 970, 200, 80, canvas.width, canvas.height);
+                pitfalls[2] = new pitfall(ctx, 4730, 970, 200, 80, canvas.width, canvas.height);
+                
+                //----------------------endGoal----------------------
+                //                endGoal (ctx, xCenter, yCenter, height, width, canvasWidth, canvasHeight)
+                goal = new endGoal(ctx, 6000, 200, 1200, 100, canvas.width, canvas.height);
+                document.addEventListener('keydown', keydownHandler);
+                document.addEventListener('keyup', keyupHandler);
+                renderCanvas();
+                //first render on default state load
+            }
+            //sets game default state on entry
+
+            function renderCanvas() {
+                requestAnimationFrame(renderCanvas);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                if(!gameStart) {
+                    intro();
+                }
+                if(isDead === true) {
+                    deadScreen();
+                }
+                //x and y positions will update with each movement of the player character?
+                else if(!gameOver && gameStart === true) {
+                    for (var i = 0; i < backgrounds.length; i++) {
+                        backgrounds[i].render();
+                    }
+                    for (var i = 0; i < grounds.length; i++) {
+                        grounds[i].render();
+                    }
+                    for (var i = 0; i < decorations.length; i++) {
+                        decorations[i].render();
+                    }
+                    for (var i = 0; i < obstacles.length; i++) {
+                        obstacles[i].render();
+                    }
+                    for (var i = 0; i < enemies.length; i++) {
+                        enemies[i].render();
+                    }
+                    //for (var i = 0; i < pitfalls.length; i++) {
+                    //    pitfalls[i].render();
+                    //}
+                    character.render();
+                    //goal.render();
+                }
+                else if(gameOver === true) {
+                    ctx.fillStyle = "#527cbf";
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.fillStyle = "#FFFFFF";
+                    ctx.font = "100px Arial";
+                    ctx.fillText("Level Complete!", canvas.width / 2 - 350, canvas.height / 2 -50);
+                    ctx.font = "20px Arial";
+                    ctx.fillText("[Game Over]", canvas.width / 2 - 45, canvas.height / 2);
+                    ctx.font = "30px Arial";
+                    ctx.fillText("By Ben Watt, Patricia Bere, & Oisin Murphy", canvas.width / 2 - 275, canvas.height / 2 + 50);
+                }
+            }
+            
+            function intro() {
+                ctx.fillStyle = "#527cbf";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = "#FFFFFF";
+                ctx.font = "100px Arial";
+                ctx.fillText("Range Hunter!", canvas.width / 2 - 315, canvas.height / 2 + 25);
+                setTimeout(function(){ 
+                    gameStart = true; 
+                }, 1500);
+            }
+            
+            function deadScreen() {
+                ctx.fillStyle = "#527cbf";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = "#FFFFFF";
+                ctx.font = "100px Arial";
+                ctx.fillText("You were defeated...", canvas.width / 2 - 435, canvas.height / 2 + 25);
+            }
+
+            function keydownHandler(e) {
+                keyList[e.keyCode] = true;
+            }
+
+            function keyupHandler(e) {
+                keyList[e.keyCode] = false;
+            }
+        </script>
+    </head>
+    <body>
+        <h1>RANGE HUNTER</h1>
+        <audio autoplay = "autoplay" loop = "loop" src = "music/rhbgmusic.mp3" controls = "controls"></audio>
+        <canvas id = "canvas" tabindex = "1">
+            Sorry, but your browser doesn't support the Canvas feature included in HTML5.<br>
+            If you wish to play this game please use Firefox, Google Chrome, Edge, or any<br>
+            up to date browser.
+        </canvas>
+    </body>
+</html>

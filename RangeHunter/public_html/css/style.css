@@ -1,0 +1,44 @@
+/* 
+    Created on : 19-Feb-2018, 17:48:09
+    Author     : Oisin Murphy, Patricia Bere, Ben Watt
+*/
+body {
+    background-color: #3d4072;
+}
+
+canvas {
+    background-color: #FFFFFF;
+
+    text-align: center;
+}    
+
+#canvas {    
+    position: relative;
+    display: block;
+    outline: 10px solid black;
+    padding-left: 0;
+    padding-right: 0;
+    width: 1280px;
+    height: 720px;
+    margin: 0 auto;
+    margin-top: 12vh;
+}
+
+audio {
+    position: relative;
+    display: block;
+    margin: auto;
+    top: 930px;
+    volume: 20;
+}
+
+h1 {
+    font-size: 76px;
+    font-family: arial;
+    color: #99a3b2;
+    top: 60px;
+    position: absolute;
+    text-align: center;
+    left: 38%;
+    z-index: 3;
+}
